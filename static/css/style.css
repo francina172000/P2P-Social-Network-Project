@@ -1,0 +1,326 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.registration-form,
+.login-form {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+/* Registration Page Styles */
+.register-page {
+    background-color: #f1f3f4;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.registration-card {
+    background: white;
+    border-radius: 8px;
+    padding: 48px 40px;
+    max-width: 448px;
+    margin: 0 auto;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.brand-section {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.brand-logo {
+    width: 75px;
+    height: 75px;
+    margin-bottom: 16px;
+}
+
+.brand-section h2 {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: #5f6368;
+    margin-bottom: 0;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.name-group, .password-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.input-group {
+    position: relative;
+}
+
+.form-control {
+    padding: 12px 16px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 16px;
+}
+
+.form-control:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+}
+
+.domain {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #5f6368;
+}
+
+.form-text {
+    color: #5f6368;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.show-password {
+    color: #1a73e8;
+    font-weight: 500;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+}
+
+.btn-link {
+    color: #1a73e8;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: #1a73e8;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: #1557b0;
+}
+
+.registration-status {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.status-content {
+    text-align: center;
+}
+
+.status-message {
+    margin-top: 16px;
+    color: #202124;
+    font-size: 16px;
+}
+
+/* Login Page Styles */
+.login-page {
+    background-color: #f1f3f4;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.login-card {
+    background: white;
+    border-radius: 8px;
+    padding: 48px 40px;
+    max-width: 448px;
+    margin: 0 auto;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.action-links {
+    display: flex;
+    gap: 20px;
+}
+
+.login-status {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Error message styling */
+.error-message {
+    color: #d93025;
+    font-size: 14px;
+    margin-top: 8px;
+    display: none;
+}
+
+/* Success message styling */
+.success-message {
+    color: #188038;
+    font-size: 14px;
+    margin-top: 8px;
+    display: none;
+}
+
+/* Input field focus animation */
+.form-control:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+    transition: all 0.2s ease;
+}
+
+/* Button hover effects */
+.btn-primary:hover {
+    background-color: #1557b0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.btn-link:hover {
+    background-color: rgba(26,115,232,0.04);
+}
+
+/* Add these styles to your existing CSS file */
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.node-info {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.chat-main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.peers-sidebar, .files-sidebar {
+    width: 250px;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    overflow-y: auto;
+}
+
+.files-sidebar {
+    border-right: none;
+    border-left: 1px solid #dee2e6;
+}
+
+.chat-messages {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.messages-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.message-input {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.message-input input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+.message-input button {
+    padding: 0.5rem 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.peers-list, .files-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.peer-item, .file-item {
+    padding: 0.5rem;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+.file-upload {
+    margin-bottom: 1rem;
+}
+
+.message {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.message.own {
+    background: #007bff;
+    color: white;
+    margin-left: auto;
+}

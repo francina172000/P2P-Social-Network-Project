@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2P Flood File Sharing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen p-6">
+        <div class="max-w-7xl mx-auto mb-6">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-800">P2P Flood Network</h1>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <!-- File Upload -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Share File</label>
+                    <div class="flex gap-4">
+                        <input type="file" id="fileInput" class="hidden" />
+                        <button onclick="document.getElementById('fileInput').click()" 
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Select File
+                        </button>
+                        <div id="selectedFile" class="flex-1 py-2"></div>
+                    </div>
+                </div>
+
+                <!-- Search Files -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Search Network</label>
+                    <div class="flex gap-4">
+                        <input type="text" id="searchInput" 
+                               class="flex-1 border rounded py-2 px-3" 
+                               placeholder="Search for files...">
+                        <button id="searchBtn" 
+                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                            Search
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search Results -->
+                <div class="mb-6">
+                    <h3 class="text-gray-700 text-sm font-bold mb-2">Search Results</h3>
+                    <div id="searchResults" class="border rounded-lg p-4 min-h-[100px] max-h-[200px] overflow-y-auto">
+                        <div class="text-gray-500 text-center">Search results will appear here</div>
+                    </div>
+                </div>
+
+                <!-- My Shared Files -->
+                <div>
+                    <h3 class="text-gray-700 text-sm font-bold mb-2">My Shared Files</h3>
+                    <div id="myFiles" class="border rounded-lg p-4 min-h-[100px] max-h-[200px] overflow-y-auto">
+                        <div class="text-gray-500 text-center">Your shared files will appear here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/peer_flood.js') }}"></script>
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+            <p class="mt-2 text-gray-600">Uploading...</p>
+        </div>
+    </div>
+</body>
+</html>

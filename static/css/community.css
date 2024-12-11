@@ -1,0 +1,29 @@
+/* Member Select Styles */
+#memberSelect option {
+    padding: 8px;
+    margin: 2px 0;
+    border-radius: 4px;
+}
+
+#memberSelect option:hover {
+    background-color: #f3f4f6;
+}
+
+#memberSelect option:checked {
+    background-color: #e5e7eb;
+}
+
+#messageArea {
+    height: calc(100vh - 240px); /* Adjust based on your header/footer heights */
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.message {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2P File Sharing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/simple-peer@9.11.1/simplepeer.min.js"></script>
+    <style>
+        .message-animate-in {
+            animation: messageSlideIn 0.3s ease-out forwards;
+        }
+        
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <nav class="bg-white shadow-lg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center">
+                        <h1 class="text-xl font-bold text-gray-800">P2P File Sharing</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-sm text-gray-600">
+                            Bucket Hash: <span id="bucketHash" class="font-mono">Connecting...</span>
+                        </div>
+                        <a href="{{ url_for('dashboard') }}" 
+                           class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Back
+                        </a>
+                        <a href="{{ url_for('peer_files') }}" class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-users mr-2"></i>Peer Files
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Bucket Warning -->
+        <div id="noBucketWarning" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-700">
+                            You need to create a bucket before you can start sharing files.
+                        </p>
+                        <div class="mt-4">
+                            <button id="createBucket" 
+                                    class="inline-flex items-center px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors duration-200">
+                                <i class="fas fa-folder-plus mr-2"></i>
+                                Create My Bucket
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Full-width Chat Section -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 border border-gray-100">
+                <!-- Chat Header -->
+                <div class="p-4 bg-gradient-to-r from-blue-500 to-blue-600 border-b flex justify-between items-center">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 bg-white/10 rounded-lg">
+                            <i class="fas fa-comments text-white"></i>
+                        </div>
+                        <h2 class="text-lg font-semibold text-white">Public Chat</h2>
+                    </div>
+                    <button id="clearChatBtn" 
+                            class="inline-flex items-center px-3 py-2 bg-white/10 text-white text-sm rounded-lg hover:bg-white/20 transition-all duration-200">
+                        <i class="fas fa-trash-alt mr-2"></i>
+                        Clear History
+                    </button>
+                </div>
+
+                <div class="p-6">
+                    <!-- Chat Messages Container -->
+                    <div id="chatMessages" 
+                         class="h-[400px] overflow-y-auto space-y-4 mb-6 pr-4 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-gray-50 scroll-smooth">
+                        <!-- Messages will be inserted here -->
+                    </div>
+                    
+                    <!-- Message Input -->
+                    <div class="flex items-center space-x-3 bg-gray-50 p-3 rounded-xl">
+                        <input type="text" 
+                               id="messageInput" 
+                               class="flex-1 px-4 py-2 bg-white rounded-lg border-0 focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                               placeholder="Type your message..."
+                               autocomplete="off">
+                        <button id="sendMessageBtn" 
+                                class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 shadow-sm hover:shadow-md">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid for main features - Hidden by default -->
+            <div id="mainArea" class="hidden">
+                <!-- Rest of the bucket content -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/public_chat.js') }}"></script>
+    <script>
+        // Add this before your main JavaScript
+        const currentUserId = "{{ current_user.id }}";
+    </script>
+</body>
+</html>

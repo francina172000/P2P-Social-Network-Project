@@ -1,0 +1,44 @@
+# Core Flask and Extensions
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-Mail==0.9.1
+Flask-SocketIO==5.3.6
+
+# Database
+SQLAlchemy==2.0.23
+SQLAlchemy-Utils==0.41.1
+PyMySQL==1.1.0
+
+# Socket and Async
+eventlet==0.33.3
+python-socketio==5.9.0
+python-engineio==4.7.1
+
+# Blockchain & Web3
+web3==6.11.3
+eth-account==0.9.0
+eth-utils==2.3.0
+py-solc-x==1.1.1
+
+# IPFS and HTTP
+requests==2.31.0
+urllib3==2.1.0
+
+# Security and Configuration
+cryptography==41.0.5
+python-dotenv==1.0.0
+itsdangerous==2.1.2
+Werkzeug==3.0.1
+
+# Utils
+python-dateutil==2.8.2
+six==1.16.0
+
+# Development & Testing (optional)
+pytest==7.4.3
+black==23.11.0
+flake8==6.1.0
+
+# Required for Python 3.11
+setuptools>=65.5.1

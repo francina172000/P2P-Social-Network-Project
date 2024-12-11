@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communities - P2P Social Network</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/community.css') }}">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#64748b',
+                        danger: '#ef4444',
+                        success: '#22c55e',
+                        background: '#f8fafc',
+                        surface: '#ffffff',
+                        border: '#e2e8f0',
+                        'text-primary': '#1e293b',
+                        'text-secondary': '#64748b',
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        const currentUser = {
+            id: "{{ current_user.id }}",
+            username: "{{ current_user.username }}"
+        };
+    </script>
+</head>
+<body class="bg-background">
+    <!-- Top Navigation -->
+    <nav class="bg-surface border-b border-border h-16 fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-full">
+            <div class="flex justify-between items-center h-full">
+                <!-- Left side -->
+                <div class="flex items-center space-x-4">
+                    <a href="/dashboard" class="text-primary hover:text-primary-dark">
+                        <i class="fas fa-arrow-left"></i>
+                        <span class="ml-2">Back to Chat</span>
+                    </a>
+                    <h1 class="text-xl font-semibold">Communities</h1>
+                </div>
+
+                <!-- Right side -->
+                <div class="flex items-center space-x-4">
+                    <!-- DHT Mode Toggle -->
+                    
+                    <button id="createCommunityBtn" 
+                            class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>
+                        Create Community
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="h-screen pt-16">
+        <!-- DHT Status Bar -->
+        <div id="dhtStatus" class="hidden bg-yellow-50 border-b border-yellow-100 sticky top-16 z-40">
+            <div class="max-w-7xl mx-auto px-4 py-3">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-network-wired text-yellow-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-yellow-800">DHT Network Status</h3>
+                        <div class="mt-1 text-sm text-yellow-700">
+                            <div class="flex items-center space-x-4">
+                                <span>Position: <span id="nodePosition" class="font-medium">-</span></span>
+                                <span>Peers: <span id="peerCount" class="font-medium">-</span></span>
+                                <span>Status: <span id="dhtConnectionStatus" class="font-medium text-green-600">Connected</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid Container -->
+        <div class="grid grid-cols-12 h-[calc(100vh-4rem)]">
+            <!-- Communities List Sidebar -->
+            <div class="col-span-2 border-r border-border bg-surface h-full flex flex-col">
+                <!-- Search Communities -->
+                <div class="p-4 border-b border-border">
+                    <div class="relative">
+                        <input type="text" 
+                               placeholder="Search communities..." 
+                               class="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:border-primary">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- Communities List -->
+                <div class="communities-list flex-1 overflow-y-auto">
+                    <!-- Communities will be dynamically added here -->
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="col-span-8 bg-surface h-full flex flex-col">
+                <!-- Community Header -->
+                <div class="p-4 border-b border-border bg-surface">
+                    <div id="currentCommunityHeader">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center text-white">
+                                    <i class="fas fa-users text-xl"></i>
+                                </div>
+                                <div class="flex flex-col">
+                                    <h2 id="currentCommunityName" class="text-lg font-semibold"></h2>
+                                    <span id="currentCommunityStats" class="text-sm text-gray-500"></span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <button id="addMembersBtn" 
+                                        class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 hidden">
+                                    <i class="fas fa-user-plus mr-2"></i>
+                                    Add Members
+                                </button>
+                                <button id="clearChatBtn" 
+                                        class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                                        onclick="clearCommunityChat()">
+                                    <i class="fas fa-trash-alt mr-2"></i>
+                                    Clear Chat
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Members list will be appended here -->
+                    </div>
+                </div>
+
+                <!-- Messages Area -->
+                <div id="messageArea" class="flex-1 overflow-y-auto p-4 space-y-4">
+                    <!-- Messages will be dynamically added here -->
+                </div>
+
+                <!-- Message Input -->
+                <div class="border-t border-border bg-surface p-4">
+                    <form id="messageForm" class="flex items-center space-x-2">
+                        <div class="relative">
+                            <button type="button" 
+                                    id="fileButton"
+                                    class="bg-gray-100 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-200">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <input type="file" 
+                                   id="communityFileInput" 
+                                   class="hidden" 
+                                   multiple>
+                        </div>
+                        <input type="text" 
+                               id="messageInput" 
+                               class="flex-1 rounded-lg border border-gray-300 px-4 py-2" 
+                               placeholder="Type your message...">
+                        <button type="submit" 
+                                class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+                            Send
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Members Sidebar -->
+            <div class="col-span-2 border-l border-border bg-surface h-full flex flex-col">
+                <!-- Members Header -->
+                <div class="p-4 border-b border-border">
+                    <h3 class="font-semibold text-gray-700">Members</h3>
+                </div>
+
+                <!-- Members List -->
+                <div id="membersList" class="flex-1 overflow-y-auto p-2">
+                    <!-- Members will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Community Modal -->
+    <div id="createCommunityModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold mb-4">Create New Community</h3>
+                    <form id="createCommunityForm">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Community Name
+                                </label>
+                                <input type="text" 
+                                       name="name"
+                                       class="w-full p-2 border border-border rounded-lg focus:outline-none focus:border-primary"
+                                       placeholder="Enter community name">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Description
+                                </label>
+                                <textarea name="description"
+                                          class="w-full p-2 border border-border rounded-lg focus:outline-none focus:border-primary h-24"
+                                          placeholder="Enter community description"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Add Members
+                                </label>
+                                <select name="members" 
+                                        multiple
+                                        id="memberSelect"
+                                        class="w-full p-2 border border-border rounded-lg focus:outline-none focus:border-primary min-h-[100px]">
+                                    <!-- Options will be populated via JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex justify-end space-x-3">
+                            <button type="button" 
+                                    class="px-4 py-2 border border-border rounded-lg hover:bg-gray-50"
+                                    onclick="document.getElementById('createCommunityModal').classList.add('hidden')">
+                                Cancel
+                            </button>
+                            <button type="submit" 
+                                    class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600">
+                                Create Community
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Members Modal -->
+    <div id="addMembersModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold mb-4">Add Members</h3>
+                    <form id="addMembersForm">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Select Members to Add
+                                </label>
+                                <select name="members" 
+                                        multiple
+                                        id="newMemberSelect"
+                                        class="w-full p-2 border border-border rounded-lg focus:outline-none focus:border-primary min-h-[100px]">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex justify-end space-x-3">
+                            <button type="button" 
+                                    class="px-4 py-2 border border-border rounded-lg hover:bg-gray-50"
+                                    onclick="document.getElementById('addMembersModal').classList.add('hidden')">
+                                Cancel
+                            </button>
+                            <button type="submit" 
+                                    class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600">
+                                Add Members
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/dht_chat.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/community.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/community_file_sharing.js') }}"></script>
+    <script>
+        let fileSharing;
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize socket first
+            if (typeof socket === 'undefined') {
+                socket = io();
+            }
+            
+            // Wait a brief moment to ensure Socket.IO is initialized
+            setTimeout(() => {
+                if (socket && !window.fileSharing) {
+                    window.fileSharing = new CommunityFileSharing(socket);
+                } else {
+                    console.error('Socket not initialized');
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>
